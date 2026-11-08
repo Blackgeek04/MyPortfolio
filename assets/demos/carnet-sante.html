@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon Carnet de Santé · démo</title>
+<style>
+:root{--nuit:#12343B;--nuit-2:#1C4650;--accent:#FF6B57;--accent-f:#A8321F;--second:#3FB6A8;--fond:#E6DDC8;--carte:#F8F3E7;--ligne:#C9BE9F;--texte:#16282C;--gris:#46555B;--ok:#177A4A;--mono:ui-monospace,"Cascadia Code",Consolas,Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fond);color:var(--texte);line-height:1.5;font-size:15px}
+header{background:var(--nuit);color:#F4EFE3}
+.wrap{width:min(1000px,94%);margin:0 auto}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 0}
+header strong{font-family:var(--mono);font-size:1.05rem}header strong span{color:var(--accent)}
+.badge{font:600 .72rem var(--mono);border:1px solid var(--second);color:var(--second);padding:3px 10px;border-radius:6px}
+main{display:grid;gap:18px;grid-template-columns:300px 1fr;margin:20px auto 30px;align-items:start}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+.panneau{background:var(--carte);border:1px solid var(--ligne);border-radius:12px;padding:18px}
+h2{font:700 1rem var(--mono);margin:0 0 12px}h2::before{content:"// ";color:var(--accent-f)}
+h3{font:700 .9rem var(--mono);margin:22px 0 8px;color:var(--nuit)}
+.membre{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:10px;margin-bottom:8px;border:2px solid transparent;border-radius:10px;background:#fff;cursor:pointer;font:inherit;color:inherit}
+.membre[aria-pressed=true]{border-color:var(--accent)}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 1rem var(--mono);color:var(--nuit)}
+.membre small{display:block;color:var(--gris)}
+.tag{display:inline-block;font:700 .7rem var(--mono);padding:2px 8px;border-radius:6px;margin:4px 4px 0 0}
+.t-warn{background:#fdf0cf;color:#7a5a0b}.t-ok{background:#dff3e8;color:var(--ok)}.t-info{background:#dde9ec;color:var(--nuit)}
+button.act{font:600 .88rem 'Segoe UI',system-ui,sans-serif;padding:8px 14px;border-radius:8px;border:1px solid var(--nuit);background:var(--nuit);color:#F4EFE3;cursor:pointer}
+button.act.sec{background:transparent;color:var(--nuit)}
+.entete-profil{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.entete-profil h2{margin:0}.entete-profil h2::before{content:""}
+.infos{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-top:14px}
+.infos div{background:#fff;border-radius:8px;padding:8px 10px;font-size:.85rem;color:var(--gris)}
+.infos b{display:block;color:var(--texte);font-size:.95rem}
+ul{list-style:none;padding:0;margin:0}
+li.ligne{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ligne)}
+li.ligne small{color:var(--gris);display:block}
+form{display:grid;gap:8px;margin-top:12px}
+label{font-size:.82rem;color:var(--gris)}
+input,select{width:100%;padding:9px;border:1px solid var(--ligne);border-radius:8px;font:inherit;background:#fff}
+.ligne-form{display:grid;gap:8px;grid-template-columns:1fr 1.4fr auto;align-items:end}
+@media(max-width:560px){.ligne-form{grid-template-columns:1fr}}
+.msg{margin-top:10px;font-size:.88rem;color:var(--ok);min-height:1.2em}
+.note{font-size:.8rem;color:var(--gris);margin:0 0 26px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><strong>Mon Carnet de <span>Santé</span></strong><span class="badge">Démo · données fictives · fonctionne sans connexion</span></div></header>
+
+<div class="wrap">
+<main>
+  <section class="panneau" aria-label="Famille">
+    <h2>Ma famille</h2>
+    <div id="liste"></div>
+    <button class="act sec" id="btnAjout" type="button">+ Ajouter un membre</button>
+    <form id="formMembre" hidden>
+      <label for="fNom">Nom complet</label><input id="fNom" required maxlength="40">
+      <label for="fRole">Lien</label>
+      <select id="fRole"><option>Papa</option><option>Maman</option><option>Fils</option><option>Fille</option><option>Grand-parent</option><option>Autre</option></select>
+      <label for="fNaiss">Date de naissance</label><input id="fNaiss" type="date" required>
+      <button class="act" type="submit">Enregistrer</button>
+    </form>
+  </section>
+
+  <section class="panneau" id="detail" aria-live="polite"></section>
+</main>
+<p class="note">Démo interactive sans serveur : les données sont fictives et disparaissent au rechargement. Le calendrier de vaccins ci-dessus est un exemple, pas un conseil médical. La vraie application utilise PHP et MySQL.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const auj=new Date();auj.setHours(0,0,0,0);
+const J=86400000, iso=d=>d.toISOString().slice(0,10);
+const dans=n=>iso(new Date(auj.getTime()+n*J));
+const fmt=s=>new Date(s+'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}).replace(/\.(?= )/,'');
+const COUL=['#F6C9A8','#BFE3DD','#F1D98B','#C9D3EE','#E7B9B0'];
+
+function age(n){
+  const d=new Date(n+'T00:00:00');let m=(auj.getFullYear()-d.getFullYear())*12+auj.getMonth()-d.getMonth();
+  if(auj.getDate()<d.getDate())m--;
+  if(m<24)return m+' mois';
+  return Math.floor(m/12)+' ans';
+}
+const fam=[
+ {id:1,nom:'Koffi Aka',role:'Papa',naiss:'1986-04-12',groupe:'O+',allergie:'Aucune connue',
+  vaccins:[{nom:'Fièvre jaune',date:'2014-02-10'},{nom:'Tétanos (rappel)',date:null}],
+  rdv:[{date:dans(12),motif:'Bilan annuel',lieu:'Clinique Sainte-Anne, Cocody'}]},
+ {id:2,nom:'Adjoua Aka',role:'Maman',naiss:'1989-09-23',groupe:'A+',allergie:'Pénicilline',
+  vaccins:[{nom:'Fièvre jaune',date:'2015-06-02'},{nom:'Hépatite B',date:'2020-01-15'}],
+  rdv:[]},
+ {id:3,nom:'Kevin Aka',role:'Fils',naiss:'2019-09-03',groupe:'O+',allergie:'Aucune connue',
+  vaccins:[{nom:'BCG',date:'2019-09-05'},{nom:'Pentavalent (3 doses)',date:'2020-01-20'},{nom:'Rougeole-Rubéole',date:'2020-06-12'},{nom:'Fièvre jaune',date:'2020-06-12'},{nom:'Rappel DTC',date:null}],
+  rdv:[{date:dans(5),motif:'Contrôle de croissance',lieu:'Centre de santé Abobo'}]},
+ {id:4,nom:'Mariam Aka',role:'Fille',naiss:'2025-06-20',groupe:'A+',allergie:'Aucune connue',
+  vaccins:[{nom:'BCG',date:'2025-06-22'},{nom:'Polio 0',date:'2025-06-22'},{nom:'Pentavalent 1',date:'2025-08-05'},{nom:'Pentavalent 2',date:null},{nom:'Pneumocoque 2',date:null},{nom:'Rougeole-Rubéole',date:null}],
+  rdv:[{date:dans(2),motif:'Vaccination',lieu:'Centre de santé Abobo'}]}];
+let sel=1,prochain=5;
+
+const membre=id=>fam.find(m=>m.id===id);
+function render(){
+  $('liste').innerHTML=fam.map((m,i)=>{
+    const afaire=m.vaccins.filter(v=>!v.date).length;
+    const r=m.rdv.filter(x=>x.date>=iso(auj)).sort((a,b)=>a.date<b.date?-1:1)[0];
+    const j=r?Math.round((new Date(r.date+'T00:00:00')-auj)/J):null;
+    return '<button class="membre" type="button" data-id="'+m.id+'" aria-pressed="'+(m.id===sel)+'"><span class="avatar" style="background:'+COUL[i%COUL.length]+'">'+esc(m.nom.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase())+'</span><span><strong>'+esc(m.nom)+'</strong><small>'+esc(m.role)+' · '+age(m.naiss)+'</small>'
+      +(afaire?'<span class="tag t-warn">'+afaire+' vaccin'+(afaire>1?'s':'')+' à faire</span>':'<span class="tag t-ok">À jour</span>')
+      +(r?'<span class="tag t-info">RDV '+(j===0?"aujourd'hui":'dans '+j+' j')+'</span>':'')+'</span></button>';
+  }).join('');
+
+  const m=membre(sel);
+  const rdv=[...m.rdv].sort((a,b)=>a.date<b.date?-1:1);
+  $('detail').innerHTML=
+   '<div class="entete-profil"><h2>'+esc(m.nom)+'</h2><span class="tag t-info">'+esc(m.role)+'</span></div>'
+   +'<div class="infos"><div>Âge<b>'+age(m.naiss)+'</b></div><div>Naissance<b>'+fmt(m.naiss)+'</b></div><div>Groupe sanguin<b>'+esc(m.groupe)+'</b></div><div>Allergies<b>'+esc(m.allergie)+'</b></div></div>'
+   +'<h3>Suivi des vaccins</h3><ul>'+(m.vaccins.length?m.vaccins.map((v,i)=>'<li class="ligne"><span>'+esc(v.nom)+'<small>'+(v.date?'Fait le '+fmt(v.date):'À faire')+'</small></span>'+(v.date?'<span class="tag t-ok">Fait</span>':'<button class="act sec" type="button" data-vac="'+i+'">Marquer fait</button>')+'</li>').join(''):'<li class="ligne"><small>Aucun vaccin enregistré.</small></li>')+'</ul>'
+   +'<h3>Rendez-vous</h3><ul>'+(rdv.length?rdv.map(r=>'<li class="ligne"><span>'+esc(r.motif)+'<small>'+fmt(r.date)+(r.lieu?' · '+esc(r.lieu):'')+'</small></span></li>').join(''):'<li class="ligne"><small>Aucun rendez-vous prévu.</small></li>')+'</ul>'
+   +'<form id="formRdv" class="ligne-form"><div><label for="rDate">Date</label><input id="rDate" type="date" min="'+iso(auj)+'" required></div><div><label for="rMotif">Motif</label><input id="rMotif" required maxlength="50" placeholder="Ex. : consultation"></div><button class="act" type="submit">Ajouter</button></form>'
+   +'<div class="msg" id="msg" role="status"></div>';
+}
+
+$('liste').onclick=e=>{const b=e.target.closest('.membre');if(b){sel=+b.dataset.id;render();}};
+$('detail').onclick=e=>{
+  const i=e.target.dataset.vac;
+  if(i!==undefined){membre(sel).vaccins[+i].date=iso(auj);render();$('msg').textContent='Vaccin enregistré dans le carnet.';}
+};
+$('detail').onsubmit=e=>{
+  e.preventDefault();
+  membre(sel).rdv.push({date:$('rDate').value,motif:$('rMotif').value.trim(),lieu:''});
+  render();$('msg').textContent='Rendez-vous ajouté.';
+};
+$('btnAjout').onclick=()=>{$('formMembre').hidden=!$('formMembre').hidden;};
+$('formMembre').onsubmit=e=>{
+  e.preventDefault();
+  fam.push({id:prochain,nom:$('fNom').value.trim(),role:$('fRole').value,naiss:$('fNaiss').value,groupe:'—',allergie:'Non renseignées',vaccins:[],rdv:[]});
+  sel=prochain++;$('formMembre').reset();$('formMembre').hidden=true;render();
+};
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BiblioGest · démo</title>
+<style>
+:root{--nuit:#12343B;--nuit-2:#1C4650;--accent:#FF6B57;--accent-f:#C2402E;--second:#3FB6A8;--creme:#F4EFE3;--sable:#EAE2D0;--texte:#16282C;--gris:#55646A;--ligne:#DDD3BD;--ok:#177A4A;--mono:ui-monospace,"Cascadia Code",Consolas,Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--creme);color:var(--texte);line-height:1.5;font-size:15px}
+header{background:var(--nuit);color:var(--creme)}
+.wrap{width:min(1000px,94%);margin:0 auto}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 0}
+header strong{font-family:var(--mono);font-size:1.1rem}header strong span{color:var(--accent)}
+.badge{font-family:var(--mono);font-size:.75rem;border:1px solid var(--second);color:var(--second);padding:3px 10px;border-radius:6px}
+#onglets{display:flex;gap:6px;margin:18px 0 0;flex-wrap:wrap}
+#onglets button{font:600 .9rem var(--mono);padding:10px 16px;border:1px solid var(--ligne);background:var(--sable);color:var(--texte);border-radius:8px 8px 0 0;cursor:pointer}
+#onglets button[aria-selected=true]{background:#fff;border-bottom-color:#fff;color:var(--accent-f)}
+.panneau{background:#fff;border:1px solid var(--ligne);border-radius:0 12px 12px 12px;padding:20px;margin-bottom:30px}
+.grille{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+h2{font:700 1.05rem var(--mono);margin:0 0 12px}h2::before{content:"// ";color:var(--accent-f)}
+label{display:block;font-size:.85rem;color:var(--gris);margin:10px 0 4px}
+select,input{width:100%;padding:10px;border:1px solid var(--ligne);border-radius:8px;font:inherit;background:#fff}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button.act{font:600 .9rem 'Segoe UI',system-ui,sans-serif;padding:10px 16px;border-radius:8px;border:1px solid var(--nuit);background:var(--nuit);color:var(--creme);cursor:pointer}
+button.act.sec{background:#fff;color:var(--nuit)}
+button.act:disabled{opacity:.5;cursor:not-allowed}
+.regle{background:var(--sable);border-radius:8px;padding:10px 12px;font-size:.9rem;margin-top:10px}
+.msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem;border-left:4px solid var(--second);background:#eef8f6;min-height:20px}
+.msg.err{border-color:var(--accent-f);background:#fdeeea}.msg.warn{border-color:#E0A526;background:#fdf5e1}.msg:empty{display:none}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--ligne);vertical-align:top}
+th{font:600 .75rem var(--mono);color:var(--gris);text-transform:uppercase}
+.chip{font:600 .8rem var(--mono);background:var(--sable);border:1px solid var(--ligne);border-radius:6px;padding:2px 8px;cursor:pointer}
+.tag{font:700 .72rem var(--mono);padding:2px 8px;border-radius:6px;white-space:nowrap}
+.t-dispo{background:#dff3e8;color:var(--ok)}.t-pret{background:#e3e9ec;color:var(--nuit)}.t-retard{background:#fdeeea;color:var(--accent-f)}.t-autre{background:#fdf5e1;color:#8A6516}
+.recu{border:2px dashed var(--nuit);border-radius:10px;padding:14px;margin-top:14px;background:var(--creme);font-family:var(--mono);font-size:.85rem}
+.recu b{display:block;font-size:1rem;margin-bottom:6px}
+.livre{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ligne)}
+.livre small{color:var(--gris);display:block}
+.scroll{overflow-x:auto}
+.notif{padding:10px 0;border-bottom:1px solid var(--ligne);display:flex;gap:10px;align-items:flex-start}
+.note{font-size:.82rem;color:var(--gris);margin-top:14px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><strong>Biblio<span>Gest</span></strong><span class="badge">Démo · données fictives</span></div></header>
+
+<div class="wrap">
+<div id="onglets" role="tablist">
+  <button role="tab" data-o="comptoir" aria-selected="true">Comptoir</button>
+  <button role="tab" data-o="adherent" aria-selected="false">Espace adhérent</button>
+  <button role="tab" data-o="rappels" aria-selected="false">Rappels</button>
+</div>
+
+<section class="panneau" id="p-comptoir">
+  <div class="grille">
+    <div>
+      <h2>Poste au comptoir</h2>
+      <label for="membreC">Adhérent</label><select id="membreC"></select>
+      <div class="regle" id="regleC"></div>
+      <label for="code">Code-barres de l'exemplaire (clique un code dans la liste)</label>
+      <input id="code" placeholder="BG-0001" autocomplete="off">
+      <div class="btns"><button class="act" id="btnPret">Prêter</button><button class="act sec" id="btnRetour">Retourner</button></div>
+      <div class="msg" id="msgC" role="status" aria-live="polite"></div>
+    </div>
+    <div class="scroll">
+      <h2>Exemplaires</h2>
+      <table><thead><tr><th>Code</th><th>Titre</th><th>État</th></tr></thead><tbody id="listeEx"></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section class="panneau" id="p-adherent" hidden>
+  <h2>Site des adhérents</h2>
+  <label for="membreA">Connecté en tant que</label><select id="membreA"></select>
+  <div class="regle" id="regleA"></div>
+  <div id="catalogue"></div>
+  <div class="msg" id="msgA" role="status" aria-live="polite"></div>
+  <div id="recu"></div>
+</section>
+
+<section class="panneau" id="p-rappels" hidden>
+  <h2>File de notifications</h2>
+  <p>Chaque rappel est créé une seule fois : relance le calcul, les doublons sont ignorés.</p>
+  <div class="btns"><button class="act" id="btnRappels">Lancer les rappels du jour</button><button class="act sec" id="btnReset">Réinitialiser la démo</button></div>
+  <div class="msg" id="msgR" role="status" aria-live="polite"></div>
+  <div id="notifs"></div>
+</section>
+
+<p class="note">Démo interactive sans serveur : les données sont fictives et disparaissent quand tu recharges la page. La vraie application tourne en PHP et MySQL.</p>
+</div>
+
+<script>
+const J=86400000, auj=new Date(); auj.setHours(0,0,0,0);
+const jour=n=>new Date(auj.getTime()+n*J);
+const fmt=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}).replace(/\.$/,'');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+
+const REGLES={'Élève':{jours:14,max:2,pen:25},'Étudiant':{jours:21,max:4,pen:50},'Adulte':{jours:21,max:3,pen:100}};
+const membres=[{id:1,nom:'Aya Koné',profil:'Élève'},{id:2,nom:'Yao Kouassi',profil:'Étudiant'},{id:3,nom:'Mariam Traoré',profil:'Adulte'}];
+const livres=[
+ {id:1,titre:'Les Soleils des indépendances',auteur:'Ahmadou Kourouma',file:[]},
+ {id:2,titre:'Une vie de boy',auteur:'Ferdinand Oyono',file:[]},
+ {id:3,titre:'Le Petit Prince',auteur:'Antoine de Saint-Exupéry',file:[]},
+ {id:4,titre:'Les Bouts de bois de Dieu',auteur:'Ousmane Sembène',file:[]},
+ {id:5,titre:'Allah n\'est pas obligé',auteur:'Ahmadou Kourouma',file:[]},
+ {id:6,titre:'L\'Enfant noir',auteur:'Camara Laye',file:[]}];
+const ex=[
+ {code:'BG-0001',livre:1,statut:'dispo'},{code:'BG-0002',livre:1,statut:'dispo'},
+ {code:'BG-0003',livre:2,statut:'pret',membre:2,echeance:jour(-3)},
+ {code:'BG-0004',livre:3,statut:'dispo'},{code:'BG-0005',livre:3,statut:'pret',membre:1,echeance:jour(2)},
+ {code:'BG-0006',livre:4,statut:'dispo'},
+ {code:'BG-0007',livre:5,statut:'pret',membre:3,echeance:jour(10)},
+ {code:'BG-0008',livre:6,statut:'dispo'}];
+let notifs=[], nRecu=0, recu=null;
+const msgs={c:['msgC','',''],a:['msgA','',''],r:['msgR','','']};
+
+const M=id=>membres.find(m=>m.id==id), L=id=>livres.find(l=>l.id==id);
+const enRetard=id=>ex.some(e=>e.membre==id&&e.statut==='pret'&&e.echeance<auj);
+const engages=id=>ex.filter(e=>e.membre==id&&(e.statut==='pret'||e.statut==='preempt')).length;
+function dire(z,txt,type){const el=$(msgs[z][0]);el.textContent=txt;el.className='msg '+(type||'');}
+function notifier(type,membre,code,msg,canal){
+  const cle=type+':'+membre+':'+code;
+  if(notifs.some(n=>n.cle===cle))return false;
+  notifs.push({cle,type,membre,code,msg,canal});return true;
+}
+
+// ---- Comptoir ----
+function preter(){
+  const code=$('code').value.trim().toUpperCase(), m=M($('membreC').value), r=REGLES[m.profil], e=ex.find(x=>x.code===code);
+  if(!e)return dire('c','Code-barres inconnu : '+(code||'(vide)'),'err');
+  if(enRetard(m.id))return dire('c','Prêt bloqué : '+m.nom+' a un livre en retard à régulariser.','err');
+  if(e.statut==='pret')return dire('c','Cet exemplaire est déjà prêté à '+M(e.membre).nom+'.','err');
+  if((e.statut==='preempt'||e.statut==='reserve')&&e.membre!=m.id)return dire('c','Exemplaire mis de côté pour '+M(e.membre).nom+'.','err');
+  const deja=engages(m.id)-(e.statut==='preempt'&&e.membre==m.id?1:0);
+  if(deja>=r.max)return dire('c','Limite atteinte : '+r.max+' livres pour le profil '+m.profil+'.','err');
+  e.statut='pret';e.membre=m.id;e.echeance=jour(r.jours);
+  dire('c','Prêt enregistré : « '+L(e.livre).titre+' » pour '+m.nom+'. À rendre le '+fmt(e.echeance)+'.','');
+  render();
+}
+function retourner(){
+  const code=$('code').value.trim().toUpperCase(), e=ex.find(x=>x.code===code);
+  if(!e||e.statut!=='pret')return dire('c','Cet exemplaire n\'est pas en prêt.','err');
+  const m=M(e.membre), r=REGLES[m.profil], l=L(e.livre);
+  const retard=Math.max(0,Math.round((auj-e.echeance)/J)), pen=retard*r.pen;
+  e.membre=null;e.echeance=null;
+  let txt='Retour enregistré : « '+l.titre+' » ('+m.nom+').';
+  if(retard)txt+=' Retard de '+retard+' j : pénalité '+pen+' FCFA.';
+  const suivant=l.file.shift();
+  if(suivant){e.statut='reserve';e.membre=suivant;
+    notifier('dispo',suivant,e.code,'« '+l.titre+' » est disponible. À retirer sous 48 h.','SMS');
+    txt+=' Mis de côté pour '+M(suivant).nom+' (notification en file).';}
+  else e.statut='dispo';
+  dire('c',txt,retard?'warn':'');
+  render();
+}
+
+// ---- Adhérent ----
+function preemprunter(id){
+  const m=M($('membreA').value), r=REGLES[m.profil], l=L(id);
+  if(enRetard(m.id))return dire('a','Compte bloqué : rends d\'abord ton livre en retard.','err');
+  if(engages(m.id)>=r.max)return dire('a','Limite atteinte : '+r.max+' livres pour le profil '+m.profil+'.','err');
+  const e=ex.find(x=>x.livre===id&&x.statut==='dispo');
+  if(!e)return dire('a','Plus d\'exemplaire libre.','err');
+  e.statut='preempt';e.membre=m.id;e.echeance=jour(2);
+  recu={no:'PE-'+String(++nRecu).padStart(4,'0'),titre:l.titre,code:e.code,nom:m.nom,avant:fmt(e.echeance),jours:r.jours};
+  dire('a','Préemprunt enregistré. Passe au comptoir avec ton reçu.','');
+  render();
+}
+function reserver(id){
+  const m=M($('membreA').value), l=L(id);
+  if(l.file.includes(m.id))return dire('a','Tu es déjà dans la file pour ce livre.','warn');
+  l.file.push(m.id);
+  dire('a','Réservation enregistrée : tu es n°'+l.file.length+' dans la file. Tu seras prévenu par SMS.','');
+  render();
+}
+
+// ---- Rappels ----
+function rappels(){
+  let nouveaux=0,doublons=0;
+  ex.filter(e=>e.statut==='pret').forEach(e=>{
+    const d=Math.round((e.echeance-auj)/J), l=L(e.livre);
+    let ok=null;
+    if(d<0)ok=notifier('retard',e.membre,e.code,'Retard de '+(-d)+' j sur « '+l.titre+' ». Pénalité en cours : '+(-d*REGLES[M(e.membre).profil].pen)+' FCFA.','SMS');
+    else if(d<=2)ok=notifier('j2',e.membre,e.code,'« '+l.titre+' » est à rendre le '+fmt(e.echeance)+'.','Push');
+    if(ok===true)nouveaux++;else if(ok===false)doublons++;
+  });
+  dire('r',nouveaux+' nouvelle(s) notification(s), '+doublons+' doublon(s) ignoré(s).',nouveaux?'':'warn');
+  render();
+}
+
+// ---- Affichage ----
+function etat(e){
+  if(e.statut==='dispo')return '<span class="tag t-dispo">Disponible</span>';
+  const nom=esc(M(e.membre).nom);
+  if(e.statut==='pret')return '<span class="tag '+(e.echeance<auj?'t-retard':'t-pret')+'">Prêté</span> '+nom+' · retour '+fmt(e.echeance)+(e.echeance<auj?' (en retard)':'');
+  return '<span class="tag t-autre">'+(e.statut==='preempt'?'Préemprunté':'Réservé')+'</span> '+nom;
+}
+function regle(id,cible){
+  const m=M(id), r=REGLES[m.profil];
+  $(cible).innerHTML='<strong>'+m.profil+'</strong> : '+r.jours+' jours, '+r.max+' livres max, pénalité '+r.pen+' FCFA/jour · en cours : '+engages(m.id)+'/'+r.max+(enRetard(m.id)?' · <span class="tag t-retard">retard</span>':'');
+}
+function render(){
+  regle($('membreC').value,'regleC'); regle($('membreA').value,'regleA');
+  $('listeEx').innerHTML=ex.map(e=>'<tr><td><button class="chip" data-code="'+e.code+'">'+e.code+'</button></td><td>'+esc(L(e.livre).titre)+'</td><td>'+etat(e)+'</td></tr>').join('');
+  $('catalogue').innerHTML=livres.map(l=>{
+    const n=ex.filter(e=>e.livre===l.id&&e.statut==='dispo').length;
+    const bouton=n?'<button class="act" data-pre="'+l.id+'">Préemprunter</button>':'<button class="act sec" data-res="'+l.id+'">Réserver</button>';
+    return '<div class="livre"><div><strong>'+esc(l.titre)+'</strong><small>'+esc(l.auteur)+' · '+(n?n+' disponible(s)':'aucun exemplaire libre')+(l.file.length?' · '+l.file.length+' en attente':'')+'</small></div>'+bouton+'</div>';
+  }).join('');
+  $('recu').innerHTML=recu?'<div class="recu"><b>REÇU '+recu.no+'</b>'+esc(recu.titre)+'<br>Exemplaire : '+recu.code+'<br>Adhérent : '+esc(recu.nom)+'<br>À retirer avant le '+recu.avant+'<br>Durée de prêt : '+recu.jours+' jours</div>':'';
+  $('notifs').innerHTML=notifs.length?notifs.map(n=>'<div class="notif"><span class="tag t-autre">'+n.canal+'</span><div><strong>'+esc(M(n.membre).nom)+'</strong><br>'+esc(n.msg)+'</div></div>').join(''):'<p class="note">Aucune notification pour le moment.</p>';
+}
+
+// ---- Démarrage ----
+const options=membres.map(m=>'<option value="'+m.id+'">'+esc(m.nom)+' ('+m.profil+')</option>').join('');
+$('membreC').innerHTML=options;$('membreA').innerHTML=options;
+$('membreC').onchange=$('membreA').onchange=render;
+$('btnPret').onclick=preter;$('btnRetour').onclick=retourner;$('btnRappels').onclick=rappels;$('btnReset').onclick=()=>location.reload();
+$('listeEx').onclick=e=>{const c=e.target.dataset.code;if(c)$('code').value=c;};
+$('catalogue').onclick=e=>{if(e.target.dataset.pre)preemprunter(+e.target.dataset.pre);if(e.target.dataset.res)reserver(+e.target.dataset.res);};
+document.querySelectorAll('#onglets button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#onglets button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['comptoir','adherent','rappels'].forEach(o=>$('p-'+o).hidden=(o!==b.dataset.o));
+});
+render();
+</script>
+</body>
+</html>

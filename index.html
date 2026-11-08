@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nabi Elysée David : Informaticien et développeur d'applications</title>
+    <meta name="description" content="Portfolio de Black_Geek, informaticien et développeur d'applications à Abidjan : pages web, applications web et mobiles pour le contexte ivoirien.">
+    <meta name="theme-color" content="#12343B">
+
+    <!-- Aperçu quand le lien est partagé (WhatsApp, Facebook...) -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:title" content="Black_Geek : développeur d'applications à Abidjan">
+    <meta property="og:description" content="Applications web et mobiles utiles au quotidien, pensées pour le contexte ivoirien.">
+    <!-- Après la mise en ligne, ajoute une image : <meta property="og:image" content="https://TON-SITE.vercel.app/assets/partage.jpg"> -->
+
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="entete" id="haut">
+    <div class="conteneur entete-ligne">
+        <a href="#haut" class="marque"><img src="assets/logo.png" alt="" class="logo" width="27" height="34">Black_Geek<span>.</span></a>
+        <button class="menu-bouton" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+        <nav class="menu">
+            <a href="#projets">Projets</a>
+            <a href="#services">Services</a>
+            <a href="#competences">Compétences</a>
+            <a href="#apropos">À propos</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="accueil">
+        <div class="conteneur">
+            <p class="etiquette">Abidjan, Côte d'Ivoire</p>
+            <h1>Je construis des applications <span class="accent">utiles</span> au quotidien.</h1>
+            <p class="sous-titre">Informaticien et développeur d'applications. Je conçois des outils web et mobiles
+                pour la gestion et les services de proximité, pensés pour le contexte ivoirien.</p>
+            <div class="actions">
+                <a class="bouton principal" href="#projets">Voir mes projets</a>
+                <a class="bouton" href="#contact">Me contacter</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="projets" class="section">
+        <div class="conteneur">
+            <h2>Projets</h2>
+            <p class="intro">Projets concrets, réalisés de la conception à la base de données.</p>
+            <!-- Les cartes sont générées à partir de assets/projets.js -->
+            <div class="grille-projets" id="grille-projets">
+                <p class="message-etat">Chargement des projets…</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section fond-clair">
+        <div class="conteneur">
+            <h2>Ce que je peux faire pour toi</h2>
+            <p class="intro">Un besoin précis ? Voici comment je peux t'aider.</p>
+            <div class="grille-competences">
+                <div class="bloc-competence reveal">
+                    <h3>Logiciel de gestion sur mesure</h3>
+                    <p>Pour une agence, une boutique, une bibliothèque ou un petit commerce : caisse, stocks, reçus,
+                        historique et suivi clair pour le gérant.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Application web de suivi</h3>
+                    <p>Dossiers, rendez-vous, comptes utilisateurs et rappels : un outil en ligne simple, sécurisé,
+                        utilisable sur téléphone.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Site vitrine</h3>
+                    <p>Un site rapide et clair pour présenter ton activité, avec un bouton WhatsApp pour que tes
+                        clients te contactent directement.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="competences" class="section">
+        <div class="conteneur">
+            <h2>Compétences</h2>
+            <div class="grille-competences">
+                <div class="bloc-competence reveal">
+                    <h3>Backend</h3>
+                    <p>PHP 8, PDO et requêtes préparées, MySQL et MariaDB, modélisation de bases, clés étrangères,
+                        transactions et verrouillage.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Frontend</h3>
+                    <p>HTML, CSS, Bootstrap 5, JavaScript, Wordpress, interfaces responsive pensées pour le téléphone.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Sécurité web</h3>
+                    <p>Protection contre l'injection SQL, les failles XSS et CSRF, sessions sécurisées, journal
+                        d'audit.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Mobile (en apprentissage)</h3>
+                    <p>React Native avec Expo, Kotlin pour Android, notions de notifications et de synchronisation.</p>
+                </div>
+                <div class="bloc-competence reveal">
+                    <h3>Outils</h3>
+                    <p>XAMPP, phpMyAdmin, VS Code, WinDev et HFSQL, Git et GitHub (en progression).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="apropos" class="section fond-clair">
+        <div class="conteneur deux-colonnes">
+            <div class="reveal">
+                <h2>À propos</h2>
+                <p>Je suis Nabi Elysée David, étudiant admissible au BTS en informatique développeur d'applications
+                    (IDA). Fan de nouvelles technologies et de jeux vidéo.</p>
+                <p>J'effectue des recherches sur les besoins locaux de la population ivoirienne et sur les difficultés
+                    qui persistent dans certains domaines du secteur informel. Cette expérience me pousse à rendre mes
+                    outils clairs, faciles à prendre en main et répondant à vos besoins.</p>
+            </div>
+            <aside class="reveal encadre">
+                <!-- Ta photo : dépose-la dans assets/photo.webp (elle apparaît toute seule, sinon rien ne s'affiche) -->
+                <img src="assets/photo.webp" alt="Portrait de Nabi Elysée David" class="portrait" width="400" height="400" loading="lazy" onerror="this.remove()">
+                <h3>Formations</h3>
+                <p>BTS IDA</p>
+                <h3>Langues</h3>
+                <p>Français, anglais</p>
+                <h3>Disponibilité</h3>
+                <p>Projets freelance, stages et collaborations</p>
+            </aside>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="conteneur">
+            <h2>Contact</h2>
+            <p class="intro">Un moment ? Écris-moi sur WhatsApp, on gère ça.</p>
+            <!-- À COMPLÉTER : remplace 225XXXXXXXXXX par ton numéro (2 endroits : ici et le bouton flottant en bas) -->
+            <div class="contacts">
+                <a class="bouton principal" href="https://wa.me/225XXXXXXXXXX?text=Bonjour%20David%2C%20j%27ai%20vu%20ton%20portfolio.">Écris-moi sur WhatsApp</a>
+                <a class="bouton" href="mailto:davidelysee04@gmail.com">davidelysee04@gmail.com</a>
+            </div><br>
+            <p class="petit">Abidjan, Côte d'Ivoire</p>
+        </div>
+    </section>
+</main>
+
+<footer class="pied">
+    <div class="conteneur">
+        <p>© <span id="annee"></span> Black_Geek. Innover et construire selon votre identité.</p>
+    </div>
+</footer>
+
+<a class="whatsapp-flottant" href="https://wa.me/225XXXXXXXXXX?text=Bonjour%20David%2C%20j%27ai%20vu%20ton%20portfolio." aria-label="Écrire sur WhatsApp">WhatsApp</a>
+
+<script src="assets/script.js"></script>
+</body>
+</html>
