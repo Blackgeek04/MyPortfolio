@@ -38,7 +38,7 @@ window.PROJETS = {
         "Clôture de caisse quotidienne avec calcul de l'écart",
         "Reçus numérotés et historique pour le gérant"
       ],
-      "tags": ["PHP 8", "MySQL", "Transactions SQL", "Kotlin (en conception)"],
+      "tags": ["PHP 8", "MySQL", "Transactions SQL", "Appli mobile (en conception)"],
       "image": "",
       "captures": [],
       "demo": "",

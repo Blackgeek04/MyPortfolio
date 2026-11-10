@@ -35,14 +35,20 @@
 
 <main>
     <section class="accueil">
-        <div class="conteneur">
-            <p class="etiquette">Abidjan, Côte d'Ivoire</p>
-            <h1>Je construis des applications <span class="accent">utiles</span> au quotidien.</h1>
-            <p class="sous-titre">Informaticien et développeur d'applications. Je conçois des outils web et mobiles
-                pour la gestion et les services de proximité, pensés pour le contexte ivoirien.</p>
-            <div class="actions">
-                <a class="bouton principal" href="#projets">Voir mes projets</a>
-                <a class="bouton" href="#contact">Me contacter</a>
+        <div class="conteneur accueil-grille">
+            <figure class="accueil-profil">
+                <img src="assets/photo.webp" alt="Portrait de Nabi Elysée David" class="portrait" width="240" height="240">
+                <figcaption><span class="nom-famille">NABI</span><span class="nom-prenoms">Elysée David</span></figcaption>
+            </figure>
+            <div class="accueil-texte">
+                <p class="etiquette">Abidjan, Côte d'Ivoire</p>
+                <h1>Je conçois vos idées en <span class="accent">outils adaptés</span> à vos besoins.</h1>
+                <p class="sous-titre">Informaticien et développeur d'applications à Abidjan : outils web et mobiles pour la gestion
+                    et les services de proximité, pensés pour le contexte ivoirien.</p>
+                <div class="actions">
+                    <a class="bouton principal" href="#projets">Voir mes projets</a>
+                    <a class="bouton" href="#contact">Me contacter</a>
+                </div>
             </div>
         </div>
     </section>
@@ -60,8 +66,8 @@
 
     <section id="services" class="section fond-clair">
         <div class="conteneur">
-            <h2>Ce que je peux faire pour toi</h2>
-            <p class="intro">Un besoin précis ? Voici comment je peux t'aider.</p>
+            <h2>Ce que je peux faire pour vous</h2>
+            <p class="intro">Un besoin précis ? Voici comment je peux vous aider.</p>
             <div class="grille-competences">
                 <div class="bloc-competence reveal">
                     <h3>Logiciel de gestion sur mesure</h3>
@@ -75,8 +81,8 @@
                 </div>
                 <div class="bloc-competence reveal">
                     <h3>Site vitrine</h3>
-                    <p>Un site rapide et clair pour présenter ton activité, avec un bouton WhatsApp pour que tes
-                        clients te contactent directement.</p>
+                    <p>Un site rapide et clair pour présenter votre activité, en WordPress ou en code sur mesure, avec un
+                        bouton WhatsApp pour que vos clients vous contactent directement.</p>
                 </div>
             </div>
         </div>
@@ -96,13 +102,14 @@
                     <p>HTML, CSS, Bootstrap 5, JavaScript, Wordpress, interfaces responsive pensées pour le téléphone.</p>
                 </div>
                 <div class="bloc-competence reveal">
-                    <h3>Sécurité web</h3>
-                    <p>Protection contre l'injection SQL, les failles XSS et CSRF, sessions sécurisées, journal
-                        d'audit.</p>
+                    <h3>Sécurité web (bonnes pratiques)</h3>
+                    <p>Requêtes préparées PDO contre l'injection SQL, mots de passe hachés, affichages échappés (XSS),
+                        jetons CSRF et sessions sécurisées. Appliquées dans mes projets, développés et testés en local
+                        avec XAMPP.</p>
                 </div>
                 <div class="bloc-competence reveal">
                     <h3>Mobile (en apprentissage)</h3>
-                    <p>React Native avec Expo, Kotlin pour Android, notions de notifications et de synchronisation.</p>
+                    <p>WinDev Mobile et Flutter, en cours d'apprentissage. Notions de notifications et de synchronisation.</p>
                 </div>
                 <div class="bloc-competence reveal">
                     <h3>Outils</h3>
@@ -116,19 +123,25 @@
         <div class="conteneur deux-colonnes">
             <div class="reveal">
                 <h2>À propos</h2>
-                <p>Je suis Nabi Elysée David, étudiant admissible au BTS en informatique développeur d'applications
-                    (IDA). Fan de nouvelles technologies et de jeux vidéo.</p>
+                <p>Je suis Nabi Elysée David, développeur d'applications basé à Abidjan et étudiant admissible au BTS
+                    Informatique, option Développeur d'applications (IDA), à l'Académie Elites. Fan de nouvelles
+                    technologies et de jeux vidéo.</p>
                 <p>J'effectue des recherches sur les besoins locaux de la population ivoirienne et sur les difficultés
                     qui persistent dans certains domaines du secteur informel. Cette expérience me pousse à rendre mes
                     outils clairs, faciles à prendre en main et répondant à vos besoins.</p>
+                <p>Chez Berryl Formation (juillet–août 2026), j'ai été assistant en robotique :</p>
+                <ul class="puces">
+                    <li>aide au montage du kit Arduino Uno RFID ;</li>
+                    <li>aide à la programmation de la carte Arduino.</li>
+                </ul>
             </div>
             <aside class="reveal encadre">
-                <!-- Ta photo : dépose-la dans assets/photo.webp (elle apparaît toute seule, sinon rien ne s'affiche) -->
-                <img src="assets/photo.webp" alt="Portrait de Nabi Elysée David" class="portrait" width="400" height="400" loading="lazy" onerror="this.remove()">
-                <h3>Formations</h3>
-                <p>BTS IDA</p>
+                <h3>Formation</h3>
+                <p>BTS Informatique, Développeur d'applications (IDA), Académie Elites</p>
+                <h3>Expérience</h3>
+                <p>Assistant en robotique, Berryl Formation</p>
                 <h3>Langues</h3>
-                <p>Français, anglais</p>
+                <p>Français, anglais (lu, écrit et parlé)</p>
                 <h3>Disponibilité</h3>
                 <p>Projets freelance, stages et collaborations</p>
             </aside>
@@ -138,9 +151,9 @@
     <section id="contact" class="section">
         <div class="conteneur">
             <h2>Contact</h2>
-            <p class="intro">Un moment ? Écris-moi sur WhatsApp, on gère ça.</p>
+            <p class="intro">Vous souhaitez faire naître vos idées ? Contactez-moi.</p>
             <div class="contacts">
-                <a class="bouton principal" href="https://wa.me/2250101574237?text=Bonjour%20David%2C%20j%27ai%20vu%20ton%20portfolio.">Écris-moi sur WhatsApp</a>
+                <a class="bouton principal" href="https://wa.me/2250101574237?text=Bonjour%20David%2C%20j%27ai%20vu%20votre%20portfolio.">Écrivez-moi sur WhatsApp</a>
                 <a class="bouton" href="mailto:davidelysee04@gmail.com">davidelysee04@gmail.com</a>
             </div><br>
             <p class="petit">Abidjan, Côte d'Ivoire</p>
@@ -154,7 +167,8 @@
     </div>
 </footer>
 
-<a class="whatsapp-flottant" href="https://wa.me/2250101574237?text=Bonjour%20David%2C%20j%27ai%20vu%20ton%20portfolio." aria-label="Écrire sur WhatsApp">WhatsApp</a>
+<a class="flottant cv-flottant" href="assets/CV_Nabi_Elysee_David.pdf" download aria-label="Télécharger mon CV" title="Télécharger mon CV">CV<small>↓</small></a>
+<a class="flottant logo-flottant" href="https://wa.me/2250101574237?text=Bonjour%20David%2C%20j%27ai%20vu%20votre%20portfolio." aria-label="Me contacter sur WhatsApp" title="Me contacter sur WhatsApp"><img src="assets/logo.png" alt="" width="40" height="52"></a>
 
 <script src="assets/script.js"></script>
 </body>
