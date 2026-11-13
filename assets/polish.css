@@ -1,0 +1,15 @@
+/* Correctifs ajoutés par-dessus style.css : focus clavier, contenu visible si le script ne charge pas,
+   pas de défilement horizontal, titres équilibrés. À fusionner dans style.css quand tu veux. */
+html, body { overflow-x: clip; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* Focus clavier : un contour net et visible */
+:focus-visible { outline: 2px solid var(--second); outline-offset: 3px; }
+
+/* Les blocs ne sont cachés au repos que si script.js a bien chargé (il ajoute la classe "js" sur <html>) */
+.reveal { opacity: 1; transform: none; }
+.js .reveal { opacity: 0; transform: translateY(16px); }
+.js .reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; }
+}
